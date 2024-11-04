@@ -1,0 +1,11 @@
+# Folders to ignore
+node_modules/
+.next/
+data/
+docs/
+
+# OS or Editor-specific files (optional)
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
