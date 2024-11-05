@@ -7,11 +7,11 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=r'C:\Users\sunil\Projects\footy\backend\.env')
 
 # Database connection parameters
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_NAME = os.getenv('DB_NAME')
-DB_HOST = os.getenv('DB_HOST')
-DB_PORT = os.getenv('DB_PORT', '5432')  # Default PostgreSQL port
+DB_USER = os.getenv('PGUSER')
+DB_PASSWORD = os.getenv('PGPASSWORD')
+DB_NAME = os.getenv('PGDATABASE')
+DB_HOST = os.getenv('PGHOST')
+DB_PORT = os.getenv('PGPORT', '5432')  # Default PostgreSQL port
 
 def connect_db():
     try:

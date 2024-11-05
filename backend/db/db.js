@@ -12,9 +12,9 @@ const pool = new Pool({
 });
 
 // Log connection parameters
-console.log("Connecting to database with the following parameters:");
+console.log("db.js - Connecting to database with the following parameters:");
 console.log(
-  `User: ${process.env.POSTGRES_USER}, Database: ${process.env.POSTGRES_PASSWORD}, Host: ${process.env.POSTGRES_HOST}`
+  `User: ${process.env.PGUSER}, Database: ${process.env.PGPASSWORD}, Host: ${process.env.PGHOST}`
 );
 
 // Function to execute a query
