@@ -1,14 +1,14 @@
 // backend/db/db.js
 const { Pool } = require("pg");
-require("dotenv").config();
+//require("dotenv").config();
 
 // Database connection configuration
 const pool = new Pool({
-  user: process.env.PGUSER || "sunil",
-  host: process.env.PGHOST || "localhost",
-  database: process.env.PGDATABASE || "runnerz",
-  password: process.env.PGPASSWORD || "python.08",
-  port: process.env.PGPORT || 5432,
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
 });
 
 // Log connection parameters
@@ -24,12 +24,3 @@ const query = (text, params) => {
 
 // Export the query function for use in other modules
 module.exports = { query };
-
-console.log("Connecting to database with the following parameters:");
-console.log(
-  `User: ${process.env.DB_USER}, Database: ${process.env.DB_NAME}, Host: ${process.env.DB_HOST}`
-);
-
-module.exports = {
-  query: (text, params) => pool.query(text, params),
-};
