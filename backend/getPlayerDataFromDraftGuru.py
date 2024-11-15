@@ -50,15 +50,32 @@ for idx, team in enumerate(teams):
     # Add Team name to the data frame
     # split the Teamname using - from last and get only 1 element
     # gold-coast-suns will be converted to Suns
-    if team.find("-") == -1:
-        df['Team'] = team.capitalize()
-    else:
-        df['Team'] = team.rsplit('-', 1)[1].capitalize()
+    df['Team'] = team.rsplit('-', 1)[1].capitalize() if '-' in team else team.capitalize()        
 
-    if idx == 0:
-        playerList = df
-    else:
-        playerList = pd.concat([playerList, df], ignore_index=True)
+    # Rename the first column (index 0) to "No"
+    df = df.rename(columns={df.columns[0]: "No"})
+
+    # Drop the columns with headings '#' and 'Unnamed: 1'
+    df = df.drop(columns=['#', 'Unnamed: 1'], errors='ignore')
+
+
+    # Clean Age, Height, and Weight columns
+    df['Age'] = df['Age'].str.replace('yr', '', regex=False)
+    df['Height'] = df['Height'].str.replace('cm', '', regex=False)
+    df['Weight'] = df['Weight'].str.replace('kg', '', regex=False)
+
+    # Split Drafted column into DraftRank, DraftYear, and DraftType
+    draft_data = df['Drafted'].str.extract(r'#(\d+)\s+(\w+)\s+(\d+)')
+    df['DraftRank'] = draft_data[0]
+    df['DraftType'] = draft_data[1]
+    df['DraftYear'] = draft_data[2]
+    df = df.drop(columns=['Drafted'])  # Remove original Drafted column
+
+    # Replace non-breaking space (code 160) with a regular space (code 32) in the 'Player' column
+    df['Player'] = df['Player'].str.replace('\u00A0', ' ', regex=True)
+
+    # Concatenate team data into playerList
+    playerList = pd.concat([playerList, df], ignore_index=True) if idx > 0 else df
 
 print(playerList.head(15))
 # playerList['Name'] = playerList['Name'].apply(lambda s : s.rstrip(" R"))
@@ -66,3 +83,4 @@ print(playerList.head(15))
 # playerList['Name'] = playerList['Name'].apply(lambda s : buildFullName(s) )
 # playerList['Age'] = playerList['Date of Birth'].apply(lambda s : calcAge(year, s))
 playerList.to_excel(outFile, index=False)
+print("Data saved to", outFile)

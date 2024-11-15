@@ -3,6 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { executePythonScript } = require("../utils/pythonExecutor");
+const { spawn } = require("child_process");
 
 const router = express.Router();
 const dir = path.join(__dirname, "../uploads");
@@ -46,6 +47,44 @@ router.post("/upload", upload.single("file"), (req, res) => {
     filePath,
     res
   );
+});
+
+router.post("/run-join-player", (req, res) => {
+  const season = req.body.season;
+  const pythonPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "venv",
+    "Scripts",
+    "python.exe"
+  ); // Path to the virtual environment's Python
+  console.log(pythonPath);
+
+  const scriptPath = path.join(__dirname, "..", "src", "joinPlayerData.py");
+  console.log(scriptPath);
+
+  const process = spawn(pythonPath, [scriptPath, season]);
+
+  let output = "";
+  let errorOutput = "";
+
+  process.stdout.on("data", (data) => {
+    output += data.toString();
+  });
+
+  process.stderr.on("data", (data) => {
+    errorOutput += data.toString();
+  });
+
+  process.on("close", (code) => {
+    if (code === 0) {
+      res.json({ output });
+    } else {
+      console.error("Error:", errorOutput);
+      res.status(500).json({ error: errorOutput });
+    }
+  });
 });
 
 module.exports = router;
